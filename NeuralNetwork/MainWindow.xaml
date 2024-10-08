@@ -5,13 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeuralNetwork"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MLP Neural Network" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        
+
         <Button x:Name="BT_TreinarRede"
                 Click="BT_TreinarRede_Click"
                 Width="200"
                 Height="120">
             Treinar Rede
         </Button>
+        <StackPanel Grid.Column="2">
+            
+        </StackPanel>
     </Grid>
 </Window>

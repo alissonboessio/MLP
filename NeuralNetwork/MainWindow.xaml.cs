@@ -22,6 +22,7 @@ namespace NeuralNetwork
             InitializeComponent();
         }
 
+        public ParametersViewModel Parameters { get; set; }
 
         private void BT_TreinarRede_Click(object sender, RoutedEventArgs e)
         {
@@ -79,5 +80,7 @@ namespace NeuralNetwork
             }
 
         }
+
+        public int iterations { get; set; }
     }
 }
