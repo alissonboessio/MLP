@@ -1,16 +1,32 @@
 ﻿using NeuralNetwork.Objects.MLP;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.ViewModel
 {
     public class ParametersViewModel : INotifyPropertyChanged
     {
-        private MLP mlp;    
+
+        public ParametersViewModel()
+        {
+            Layers = new ObservableCollection<LayerItem>();
+
+            Layers.CollectionChanged += (s, e) =>
+            {
+                for (int i = 0; i < Layers.Count; i++)
+                {
+                    Layers[i].Index = i + 1;
+                }
+            };
+        }
+
+        private MLP mlp;
 
         private int _iterations;
         public int Iterations
@@ -39,7 +55,7 @@ namespace NeuralNetwork
                 }
             }
         }
-        
+
         private string _dataFilePath;
         public string DataFilePath
         {
@@ -54,7 +70,7 @@ namespace NeuralNetwork
             }
         }
 
-        
+
         private string _outputFilePath;
         public string OutputFilePath
         {
@@ -69,7 +85,7 @@ namespace NeuralNetwork
             }
         }
 
-        
+
         private string _testFilePath;
         public string TestFilePath
         {
@@ -83,7 +99,6 @@ namespace NeuralNetwork
                 }
             }
         }
-        
 
         private bool _isTrained;
         public bool IsTrained
@@ -100,8 +115,8 @@ namespace NeuralNetwork
         }
 
         // camada de entrada e saida o usuario nao pode modificar, a de saida é pelo dummies
-        private List<int> _layers;
-        public List<int> Layers
+        private ObservableCollection<LayerItem> _layers;
+        public ObservableCollection<LayerItem> Layers
         {
             get => _layers;
             set
@@ -113,13 +128,17 @@ namespace NeuralNetwork
                 }
             }
         }
-
-
         public void Train()
         {
             IsTrained = false;
 
-            mlp = new MLP(Layers);
+            List<int> layersLocal = new List<int>();
+
+            layersLocal.Add(7); // camada inicial (qtde neuronios = qtde colunas)
+            layersLocal.AddRange(Layers.Select(li => li.QtyNeurons).ToList());
+            layersLocal.Add(2); // camada final (qtde neuronios = qtde de colunas dummy)
+
+            mlp = new MLP(layersLocal);
 
             var trainingInputs = new List<List<double>>
             {
@@ -156,7 +175,7 @@ namespace NeuralNetwork
             foreach (var input in trainingInputs)
             {
                 var output = mlp.ForwardPropagate(input);
-                Console.WriteLine($"Input: {string.Join(",", input)} => Output: {string.Join(",", output)}");
+                Trace.WriteLine($"Input: {string.Join(",", input)} => Output: {string.Join(",", output)}");
             }
         }
 

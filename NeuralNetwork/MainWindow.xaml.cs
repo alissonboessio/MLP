@@ -1,6 +1,9 @@
 ﻿
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Win32;
+using NeuralNetwork.ViewModel;
 
 namespace NeuralNetwork
 {
@@ -19,6 +22,12 @@ namespace NeuralNetwork
 
         private void BT_TreinarRede_Click(object sender, RoutedEventArgs e)
         {
+            if (ParametersViewModel.Iterations <= 0)
+            {
+                MessageBox.Show("Épocas deve ser maior que 0!", "Parâmetros Incorretos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             ParametersViewModel.Train();
 
         }
@@ -69,5 +78,6 @@ namespace NeuralNetwork
                 ParametersViewModel.TestFilePath = openFileDialog.FileName;
             }
         }
+
     }
 }
