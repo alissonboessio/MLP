@@ -1,86 +1,73 @@
-﻿using NeuralNetwork.Objects.MLP;
-using System.Text;
+﻿
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace NeuralNetwork
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        public ParametersViewModel ParametersViewModel { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+            ParametersViewModel = new ParametersViewModel();
+            DataContext = ParametersViewModel;
         }
 
         public ParametersViewModel Parameters { get; set; }
 
         private void BT_TreinarRede_Click(object sender, RoutedEventArgs e)
         {
-            // camada de entrada e saida o usuario nao pode modificar, a de saida é pelo dummies
-            List<int> layerSizes = new List<int> { 7, 2, 2 };
-            MLP mlp = new MLP(layerSizes);
+            ParametersViewModel.Train();
 
-            var trainingInputs = new List<List<double>>
-            {
-                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
-                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
-                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
-                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
-            };
-
-            var trainingOutputs = new List<List<double>>
-            {
-                new List<double> { 0, 1 },  
-                new List<double> { 1, 0 },  
-                new List<double> { 1, 0 },  
-                new List<double> { 0, 1 }   
-            };
-
-            //var trainingOutputs = new List<List<double>>
-            //{
-            //    new List<double> { 0 },  
-            //    new List<double> { 1 },  
-            //    new List<double> { 1 },  
-            //    new List<double> { 1 }   
-            //};
-
-            // XOR
-            //var trainingInputs = new List<List<double>>
-            //{
-            //    new List<double> { 0, 0 },
-            //    new List<double> { 0, 1 },
-            //    new List<double> { 1, 0 },
-            //    new List<double> { 1, 1 }
-            //};
-
-            //var trainingOutputs = new List<List<double>>
-            //{
-            //    new List<double> { 0 },  
-            //    new List<double> { 1 },  
-            //    new List<double> { 1 },  
-            //    new List<double> { 0 }   
-            //};
-
-            mlp.Train(trainingInputs, trainingOutputs, 10000, 0.5);
-
-            foreach (var input in trainingInputs)
-            {
-                var output = mlp.ForwardPropagate(input);
-                Console.WriteLine($"Input: {string.Join(",", input)} => Output: {string.Join(",", output)}");
-            }
+        }
+        private void BT_TestarRede_Click(object sender, RoutedEventArgs e)
+        {
+            ParametersViewModel.Test();
 
         }
 
-        public int iterations { get; set; }
+        private void BTTrainFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Selecione o arquivo de treino";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            openFileDialog.DefaultExt = ".csv";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ParametersViewModel.DataFilePath = openFileDialog.FileName;
+            }
+        }
+
+        private void BTOutputTrainFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Selecione o arquivo dummy";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            openFileDialog.DefaultExt = ".csv";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ParametersViewModel.OutputFilePath = openFileDialog.FileName;
+            }
+        }
+
+        private void BTTestFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Selecione o arquivo de teste";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            openFileDialog.DefaultExt = ".csv";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ParametersViewModel.TestFilePath = openFileDialog.FileName;
+            }
+        }
     }
 }

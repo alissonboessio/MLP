@@ -3,25 +3,120 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NeuralNetwork"
-        mc:Ignorable="d"
-        Title="MLP Neural Network" Height="450" Width="800">
+        xmlns:local="clr-namespace:NeuralNetwork" xmlns:Behaviors="clr-namespace:NeuralNetwork.Behaviours" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance local:ParametersViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d" Title="MLP Neural Network" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="150" />
         </Grid.ColumnDefinitions>
 
-        
-
-        <Button x:Name="BT_TreinarRede"
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <Button x:Name="BT_TreinarRede"
                 Click="BT_TreinarRede_Click"
                 Width="200"
-                Height="120">
-            Treinar Rede
-        </Button>
-        <StackPanel Grid.Column="2">
+                Height="120">Treinar Rede</Button>
+
+            <GroupBox Grid.Row="1" Header="Arquivos">
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                 Margin="0,5">
+                        <TextBox IsReadOnly="True"
+                             Grid.Column="0"
+                             Width="350"
+                             Height="22"
+                             Name="TBTrainFile"
+                             Margin="0,0,5,0"
+                             Text="{Binding DataFilePath}"></TextBox>
+                        <Button Grid.Column="1"
+                             Padding="8,0"
+                             Height="22"
+                             Name="BTTrainFile"
+                             Click="BTTrainFile_Click">Selecionar arquivo de treino</Button>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBox IsReadOnly="True"
+                             Grid.Column="0"
+                             Width="350"
+                             Height="22"
+                             Name="TBOutputTrainFile"
+                             Margin="0,0,5,0"
+                             Text="{Binding OutputFilePath}" />
+
+                        <Button Grid.Column="1"
+                             Padding="8,0"
+                             Height="22"
+                             Name="BTOutputTrainFile"
+                             Click="BTOutputTrainFile_Click">Selecionar arquivo dummy</Button>
+
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,5">
+
+                        <TextBox IsReadOnly="True"
+                             Grid.Column="0"
+                             Width="350"
+                             Height="22"
+                             Name="TBTestFile"
+                             Margin="0,0,5,0"
+                             Text="{Binding TrainFilePath}" />
+
+                        <Button Grid.Column="1"
+                             Padding="8,0"
+                             Height="22"
+                             Name="BTTestFile"
+                             Click="BTTestFile_Click">Selecionar arquivo de teste</Button>
+
+                    </StackPanel>
+                </StackPanel>
+
+            </GroupBox>  
+        </Grid>
+               
+
+        
+        
+        <GroupBox Grid.Column="1" 
+                  Header="Parâmetros"
+                  Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+
+                    <StackPanel Margin="0,10,0,0">
+                        <Label FontSize="10" Height="25">Épocas</Label>
+                        <TextBox Name="TBIterations" 
+                                 Width="100"
+                                 Text="{Binding Iterations, Mode=TwoWay, StringFormat=\{0:N0\}, ConverterCulture=pt-br}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,0">
+                        <Label FontSize="10" Height="25">Taxa de Aprendizado</Label>
+                        <TextBox Name="NumberTextBox" 
+                                 Width="100"
+                                 Text="{Binding LearningRate, Mode=TwoWay, StringFormat=\{0:N2\}, ConverterCulture=pt-br}" />
+
+                    </StackPanel>
+
+                </StackPanel>
+                
+                
+                
+            </Grid>
             
-        </StackPanel>
+        </GroupBox>
     </Grid>
 </Window>
