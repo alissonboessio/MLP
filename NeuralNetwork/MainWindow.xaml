@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NeuralNetwork"
         xmlns:viewmodel="clr-namespace:NeuralNetwork.ViewModel"
         d:DataContext="{d:DesignInstance viewmodel:ParametersViewModel, IsDesignTimeCreatable=True}"
-        mc:Ignorable="d" Title="MLP Neural Network" Height="450" Width="900" FontSize="20">
+        mc:Ignorable="d" Title="MLP Neural Network" Height="500" MinHeight="500" Width="900" MinWidth="900" FontSize="20" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -23,6 +23,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="BT_TreinarRede"
@@ -71,6 +72,48 @@
                     </Button.Resources>
                 </Button>
 
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="1"
+                                        Header="Resultados"
+                                        FontSize="14">
+                        <StackPanel Margin="0,10">
+                            <TextBlock Text="{Binding TestReturnMLP.TotalCases, StringFormat='Qtde. testes: {0}'}"/>
+                            <TextBlock Text="{Binding TestReturnMLP.QtyCorrect, StringFormat='Qtde. correta: {0}'}" />
+                            <TextBlock Text="{Binding TestReturnMLP.QtyWrong, StringFormat='Qtde. errada: {0}'}" />
+                            <TextBlock Text="{Binding TestReturnMLP.Accuracy, StringFormat='Acurácia: {0:P2}'}" />
+                            <Button x:Name="BT_SalvarResultados"
+                                    Click="BT_TreinarRede_Click"
+                                    Cursor="Hand"
+                                    Content="Salvar Resultados"
+                                    Grid.Column="0">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TestReturnMLP}"
+                                                         Value="{x:Null}">
+                                                <Setter Property="Visibility"
+                                                        Value="Hidden" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                
+                                </Button.Style>
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius"
+                                                Value="10" />
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+
+                    </GroupBox>
+
+                </Grid>
 
             </Grid>
             
@@ -168,7 +211,7 @@
                   Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="200"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
@@ -188,6 +231,15 @@
 
                     </StackPanel>
 
+                    <StackPanel Margin="0,10,0,0">
+                        <Label FontSize="10"
+                               Height="25"
+                               Content="Limiar (0 &lt;= x &lt; 1)"></Label>
+                        <TextBox Name="TBTestThreshold"
+                                 Margin="10,0"
+                                 Text="{Binding TestThreshold, Mode=TwoWay, StringFormat=\{0:N2\}, ConverterCulture=pt-br}" />
+
+                    </StackPanel>
                 </StackPanel>
 
                 <Grid Grid.Row="1">

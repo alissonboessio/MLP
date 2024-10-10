@@ -1,4 +1,5 @@
-﻿using NeuralNetwork.Objects.MLP;
+﻿using NeuralNetwork.Objects;
+using NeuralNetwork.Objects.MLP;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,8 +43,8 @@ namespace NeuralNetwork.ViewModel
             }
         }
 
-        private double _learningRate;
-        public double LearningRate
+        private decimal _learningRate;
+        public decimal LearningRate
         {
             get => _learningRate;
             set
@@ -52,6 +53,20 @@ namespace NeuralNetwork.ViewModel
                 {
                     _learningRate = value;
                     OnPropertyChanged(nameof(LearningRate));
+                }
+            }
+        }
+
+        private decimal _testThreshold = 0.5M; 
+        public decimal TestThreshold
+        {
+            get => _testThreshold;
+            set
+            {
+                if (_testThreshold != value)
+                {
+                    _testThreshold = value;
+                    OnPropertyChanged(nameof(TestThreshold));
                 }
             }
         }
@@ -114,6 +129,49 @@ namespace NeuralNetwork.ViewModel
             }
         }
 
+        private TestReturn _testReturnMLP;
+        public TestReturn TestReturnMLP
+        {
+            get => _testReturnMLP;
+            set
+            {
+                if (_testReturnMLP != value)
+                {
+                    _testReturnMLP = value;
+                    OnPropertyChanged(nameof(TestReturnMLP));
+                }
+            }
+        }
+
+        public List<List<double>> TrainInput { get; set; } = new List<List<double>>
+            {
+                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
+                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
+                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
+                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
+            };
+        public List<List<double>> TrainOutput { get; set; } = new List<List<double>>
+            {
+                new List<double> { 0, 1 },
+                new List<double> { 1, 0 },
+                new List<double> { 1, 0 },
+                new List<double> { 0, 1 }
+            };
+        public List<List<double>> TestInput { get; set; } = new List<List<double>>
+            {
+                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
+                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
+                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
+                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
+            };
+        public List<List<double>> TestOutput { get; set; } = new List<List<double>>
+            {
+                new List<double> { 0, 1 },
+                new List<double> { 1, 0 },
+                new List<double> { 1, 0 },
+                new List<double> { 0, 1 }
+            };
+
         // camada de entrada e saida o usuario nao pode modificar, a de saida é pelo dummies
         private ObservableCollection<LayerItem> _layers;
         public ObservableCollection<LayerItem> Layers
@@ -131,32 +189,17 @@ namespace NeuralNetwork.ViewModel
         public void Train()
         {
             IsTrained = false;
+            TestReturnMLP = null;
 
             List<int> layersLocal = new List<int>();
 
-            layersLocal.Add(7); // camada inicial (qtde neuronios = qtde colunas)
+            layersLocal.Add(TrainInput.FirstOrDefault().Count); // camada inicial (qtde neuronios = qtde colunas)
             layersLocal.AddRange(Layers.Select(li => li.QtyNeurons).ToList());
-            layersLocal.Add(2); // camada final (qtde neuronios = qtde de colunas dummy)
+            layersLocal.Add(TrainOutput.FirstOrDefault().Count); // camada final (qtde neuronios = qtde de colunas dummy)
 
             mlp = new MLP(layersLocal);
 
-            var trainingInputs = new List<List<double>>
-            {
-                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
-                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
-                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
-                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
-            };
-
-            var trainingOutputs = new List<List<double>>
-            {
-                new List<double> { 0, 1 },
-                new List<double> { 1, 0 },
-                new List<double> { 1, 0 },
-                new List<double> { 0, 1 }
-            };
-
-            mlp.Train(trainingInputs, trainingOutputs, Iterations, LearningRate);
+            mlp.Train(TrainInput, TrainOutput, Iterations, (double)LearningRate);
 
             IsTrained = true;
 
@@ -165,18 +208,8 @@ namespace NeuralNetwork.ViewModel
         public void Test()
         {
 
-            var trainingInputs = new List<List<double>>
-            {
-                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
-                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
-                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
-                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
-            };
-            foreach (var input in trainingInputs)
-            {
-                var output = mlp.ForwardPropagate(input);
-                Trace.WriteLine($"Input: {string.Join(",", input)} => Output: {string.Join(",", output)}");
-            }
+            TestReturnMLP = mlp.Test(TestInput, TestOutput, (double)TestThreshold);
+
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

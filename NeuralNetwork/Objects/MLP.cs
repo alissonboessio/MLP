@@ -1,5 +1,8 @@
 ﻿
 
+using System.Collections.Generic;
+using System.Diagnostics;
+
 namespace NeuralNetwork.Objects.MLP
 {
     public class MLP
@@ -40,6 +43,69 @@ namespace NeuralNetwork.Objects.MLP
             }
         }
         
+        public TestReturn Test(List<List<double>> testInputs, List<List<double>> testOutputs, double threshold)
+        {
+            List<List<double>> outputsMLP = new List<List<double>>();
+
+            foreach (List<double> input in testInputs)
+            {
+                outputsMLP.Add(ForwardPropagate(input));
+            }
+
+            TestReturn testReturn = new TestReturn();
+            testReturn.TotalCases = outputsMLP.Count;
+            testReturn.calculatedOutput.AddRange(outputsMLP);
+
+            for (int i = 0; i < outputsMLP.Count; i++)
+            {
+                List<double> classifiedOutputs = ApplyThreshold(outputsMLP[i], threshold);
+                testReturn.classifiedOutput.Add(classifiedOutputs);
+
+                bool isCorrect = true;
+                for (int j = 0; j < classifiedOutputs.Count; j++)
+                {
+                    if ((int)classifiedOutputs[j] != (int)testOutputs[i][j])
+                    {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+
+                if (isCorrect)
+                {
+                    testReturn.QtyCorrect++;
+                }
+                else
+                {
+                    testReturn.QtyWrong++;
+                }
+            }
+
+            testReturn.Accuracy = (decimal)testReturn.QtyCorrect / testReturn.TotalCases;
+
+           return testReturn;
+
+        }
+
+        public List<double> ApplyThreshold(List<double> inputs, double threshold)
+        {
+            List<double> thresholdInputs = new List<double>();
+
+            foreach (var input in inputs)
+            {
+                if (input > threshold)
+                {
+                    thresholdInputs.Add(1.0); 
+                }
+                else
+                {
+                    thresholdInputs.Add(0.0);
+                }
+            }
+
+            return thresholdInputs;
+        }
+
         private void Backpropagate(List<double> realOutput, List<double> expectedOutput, double learningRate, List<double> realInputs)
         {
 
