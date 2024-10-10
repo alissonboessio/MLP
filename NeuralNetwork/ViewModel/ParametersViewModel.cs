@@ -86,6 +86,21 @@ namespace NeuralNetwork.ViewModel
         }
 
 
+        private string _dataOutputFilePath;
+        public string DataOutputFilePath
+        {
+            get => _dataOutputFilePath;
+            set
+            {
+                if (_dataOutputFilePath != value)
+                {
+                    _dataOutputFilePath = value;
+                    OnPropertyChanged(nameof(DataOutputFilePath));
+                }
+            }
+        }
+
+
         private string _outputFilePath;
         public string OutputFilePath
         {

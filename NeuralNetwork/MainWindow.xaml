@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NeuralNetwork"
         xmlns:viewmodel="clr-namespace:NeuralNetwork.ViewModel"
         d:DataContext="{d:DesignInstance viewmodel:ParametersViewModel, IsDesignTimeCreatable=True}"
-        mc:Ignorable="d" Title="MLP Neural Network" Height="500" MinHeight="500" Width="900" MinWidth="900" FontSize="20" ResizeMode="NoResize">
+        mc:Ignorable="d" Title="MLP Neural Network" Height="600" MinHeight="600" Width="900" MinWidth="900" FontSize="20" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -90,6 +90,7 @@
                                     Click="BT_TreinarRede_Click"
                                     Cursor="Hand"
                                     Content="Salvar Resultados"
+                                    Margin="0,10,0,0"
                                     Grid.Column="0">
                                 <Button.Style>
                                     <Style TargetType="Button">
@@ -122,85 +123,132 @@
                       Margin="5,5,0,5">
 
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                 Margin="0,5">
-                        <TextBox IsReadOnly="True"
-                             Grid.Column="0"
-                             Width="350"
-                             Name="TBTrainFile"
-                             Margin="0,0,5,0"
-                             Text="{Binding DataFilePath}"></TextBox>
-                        <Button Grid.Column="1"
-                                Padding="8,0"
-                                Width="200"
-                                FontSize="14"
-                                Cursor="Hand"
-                                Content="Selecionar arquivo de treino"
-                             Name="BTTrainFile"
-                             Click="BTTrainFile_Click">
-                            <Button.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius"
-                                            Value="5" />
-                                </Style>
-                            </Button.Resources> 
-                        </Button>
-                    </StackPanel>
 
-                    <StackPanel Orientation="Horizontal">
+                    <GroupBox Header="Treino"
+                              FontSize="12">
 
-                        <TextBox IsReadOnly="True"
-                             Grid.Column="0"
-                             Width="350"
-                             Name="TBOutputTrainFile"
-                             Margin="0,0,5,0"
-                             Text="{Binding OutputFilePath}" />
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                         Margin="0,5">
+                                <TextBox IsReadOnly="True"
+                                     Grid.Column="0"
+                                     Width="350"
+                                     Name="TBTrainFile"
+                                         Margin="0,0,5,0"
+                                         Height="28"
+                                         Text="{Binding TrainFilePath}"></TextBox>
+                                <Button Grid.Column="1"
+                                        Padding="8,0"
+                                        Width="210"
+                                        FontSize="14"
+                                        Cursor="Hand"
+                                        Content="Selecionar arquivo de entrada"
+                                     Name="BTTrainFile"
+                                     Click="BTTrainFile_Click">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius"
+                                                    Value="5" />
+                                        </Style>
+                                    </Button.Resources> 
+                                </Button>
+                            </StackPanel>
 
-                        <Button Grid.Column="1"
-                             Padding="8,0"
-                                Width="200"
-                                FontSize="14"
-                                Cursor="Hand"
-                                Name="BTOutputTrainFile"
-                                Content="Selecionar arquivo dummy"
-                             Click="BTOutputTrainFile_Click">
-                            <Button.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius"
-                                            Value="5" />
-                                </Style>
-                            </Button.Resources> 
-                        </Button>
+                            <StackPanel Orientation="Horizontal">
 
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,5">
+                            <TextBox IsReadOnly="True"
+                                 Grid.Column="0"
+                                Width="350"
+                                Height="28"
+                                Name="TBOutputTrainFile"
+                                 Margin="0,0,5,0"
+                                 Text="{Binding OutputFilePath}" />
 
-                        <TextBox IsReadOnly="True"
-                             Grid.Column="0"
-                             Width="350"
-                             Name="TBTestFile"
-                             Margin="0,0,5,0"
-                             Text="{Binding TrainFilePath}" />
+                            <Button Grid.Column="1"
+                                 Padding="8,0"
+                                    Width="210"
+                                    FontSize="14"
+                                    Cursor="Hand"
+                                    Name="BTOutputTrainFile"
+                                    Content="Selecionar arquivo dummy"
+                                 Click="BTOutputTrainFile_Click">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius"
+                                                Value="5" />
+                                    </Style>
+                                </Button.Resources> 
+                            </Button>
 
-                        <Button Grid.Column="1"
-                             Padding="8,0"
-                                Cursor="Hand"
-                                Width="200"
-                                FontSize="14"
-                                Content="Selecionar arquivo de teste"
-                                Name="BTTestFile"
-                             Click="BTTestFile_Click">
-                            <Button.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius"
-                                            Value="5" />
-                                </Style>
-                            </Button.Resources> 
-                        </Button>
+                        </StackPanel>
 
-                    </StackPanel>
+                        </StackPanel>
+
+                    </GroupBox>
+
+                    <GroupBox Header="Teste" FontSize="12">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,5,0,0">
+
+                                <TextBox IsReadOnly="True"
+                                         Grid.Column="0"
+                                         Width="350"
+                                         Height="28"
+                                         Name="TBTestFile"
+                                         Margin="0,0,5,0"
+                                         Text="{Binding DataFilePath}" />
+
+                                <Button Grid.Column="1"
+                                        Padding="8,0"
+                                        Cursor="Hand"
+                                        Width="210"
+                                        FontSize="14"
+                                        Content="Selecionar arquivo de entrada"
+                                        Name="BTTestFile"
+                                        Click="BTTestFile_Click">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius"
+                                                    Value="5" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,5">
+
+                                <TextBox IsReadOnly="True"
+                                         Grid.Column="0"
+                                         Width="350"
+                                         Name="TBTestOutputFile"
+                                         Margin="0,0,5,0"
+                                         Text="{Binding DataOutputFilePath}" />
+
+                                <Button Grid.Column="1"
+                                        Padding="8,0"
+                                        Cursor="Hand"
+                                        Width="210"
+                                        Height="28"
+                                        FontSize="14"
+                                        Content="Selecionar arquivo dummy"
+                                        Name="BTTestOutputFile"
+                                        Click="BTTestOutputFile_Click">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius"
+                                                    Value="5" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                            </StackPanel>
+                        </StackPanel>                    
+                
+                </GroupBox>
+                
                 </StackPanel>
 
             </GroupBox>  
@@ -252,6 +300,7 @@
                     <DataGrid ItemsSource="{Binding Layers}"
                               FontSize="14"
                               Grid.Row="1"
+                              CanUserSortColumns="False"
                               AutoGenerateColumns="False"
                               CanUserAddRows="True"
                               CanUserDeleteRows="True">

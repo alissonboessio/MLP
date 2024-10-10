@@ -54,7 +54,7 @@ namespace NeuralNetwork
         private void BTOutputTrainFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Selecione o arquivo dummy";
+            openFileDialog.Title = "Selecione o arquivo dummy de treino";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog.Filter = "CSV files (*.csv)|*.csv";
             openFileDialog.DefaultExt = ".csv";
@@ -79,5 +79,18 @@ namespace NeuralNetwork
             }
         }
 
+        private void BTTestOutputFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Selecione o arquivo dummy de teste";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            openFileDialog.DefaultExt = ".csv";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ParametersViewModel.DataOutputFilePath = openFileDialog.FileName;
+            }
+        }
     }
 }
