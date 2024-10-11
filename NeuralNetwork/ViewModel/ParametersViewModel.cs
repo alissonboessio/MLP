@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace NeuralNetwork.ViewModel
 {
@@ -71,50 +73,50 @@ namespace NeuralNetwork.ViewModel
             }
         }
 
-        private string _dataFilePath;
-        public string DataFilePath
+        #region Train Files
+
+        private string _trainFilePath;
+        public string TrainFilePath
         {
-            get => _dataFilePath;
+            get => _trainFilePath;
             set
             {
-                if (_dataFilePath != value)
+                if (_trainFilePath != value)
                 {
-                    _dataFilePath = value;
-                    OnPropertyChanged(nameof(DataFilePath));
+                    _trainFilePath = value;
+                    if (_trainFilePath != null)
+                    {
+                        TrainInput = ProcessFile(TrainFilePath);
+                    }
+                    OnPropertyChanged(nameof(TrainFilePath));
                 }
             }
         }
 
-
-        private string _dataOutputFilePath;
-        public string DataOutputFilePath
+        private string _trainDummiesFilePath;
+        public string TrainDummiesFilePath
         {
-            get => _dataOutputFilePath;
+            get => _trainDummiesFilePath;
             set
             {
-                if (_dataOutputFilePath != value)
+                if (_trainDummiesFilePath != value)
                 {
-                    _dataOutputFilePath = value;
-                    OnPropertyChanged(nameof(DataOutputFilePath));
+                    _trainDummiesFilePath = value;
+                    if (_trainDummiesFilePath != null)
+                    {
+                        TrainOutput = ProcessFile(TrainDummiesFilePath);
+                    }
+                    OnPropertyChanged(nameof(TrainDummiesFilePath));
                 }
             }
         }
 
+        public List<List<double>> TrainInput { get; set; } 
+        public List<List<double>> TrainOutput { get; set; }
 
-        private string _outputFilePath;
-        public string OutputFilePath
-        {
-            get => _outputFilePath;
-            set
-            {
-                if (_outputFilePath != value)
-                {
-                    _outputFilePath = value;
-                    OnPropertyChanged(nameof(OutputFilePath));
-                }
-            }
-        }
+        #endregion
 
+        #region Test Files
 
         private string _testFilePath;
         public string TestFilePath
@@ -125,10 +127,37 @@ namespace NeuralNetwork.ViewModel
                 if (_testFilePath != value)
                 {
                     _testFilePath = value;
+                    if (_testFilePath != null)
+                    {
+                        TestInput = ProcessFile(TestFilePath);
+                    }
                     OnPropertyChanged(nameof(TestFilePath));
                 }
             }
         }
+
+        private string _testDummiesFilePath;
+        public string TestDummiesFilePath
+        {
+            get => _testDummiesFilePath;
+            set
+            {
+                if (_testDummiesFilePath != value)
+                {
+                    _testDummiesFilePath = value;
+                    if (_testDummiesFilePath != null)
+                    {
+                        TestOutput = ProcessFile(TestDummiesFilePath);
+                    }
+                    OnPropertyChanged(nameof(TestDummiesFilePath));
+                }
+            }
+        }
+
+        public List<List<double>> TestInput { get; set; }
+        public List<List<double>> TestOutput { get; set; }
+
+        #endregion
 
         private bool _isTrained;
         public bool IsTrained
@@ -157,35 +186,6 @@ namespace NeuralNetwork.ViewModel
                 }
             }
         }
-
-        public List<List<double>> TrainInput { get; set; } = new List<List<double>>
-            {
-                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
-                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
-                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
-                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
-            };
-        public List<List<double>> TrainOutput { get; set; } = new List<List<double>>
-            {
-                new List<double> { 0, 1 },
-                new List<double> { 1, 0 },
-                new List<double> { 1, 0 },
-                new List<double> { 0, 1 }
-            };
-        public List<List<double>> TestInput { get; set; } = new List<List<double>>
-            {
-                new List<double> { 0, 0, 0, 1, 1, 1, 1 },
-                new List<double> { 0, 1, 0, 0, 1, 0 ,1 },
-                new List<double> { 1, 0, 1, 0, 1, 0 ,1 },
-                new List<double> { 1, 1, 0, 0, 0, 0, 1 }
-            };
-        public List<List<double>> TestOutput { get; set; } = new List<List<double>>
-            {
-                new List<double> { 0, 1 },
-                new List<double> { 1, 0 },
-                new List<double> { 1, 0 },
-                new List<double> { 0, 1 }
-            };
 
         // camada de entrada e saida o usuario nao pode modificar, a de saida é pelo dummies
         private ObservableCollection<LayerItem> _layers;
@@ -224,6 +224,30 @@ namespace NeuralNetwork.ViewModel
         {
 
             TestReturnMLP = mlp.Test(TestInput, TestOutput, (double)TestThreshold);
+
+        }
+
+        public List<List<double>> ProcessFile(string filePath)
+        {
+            List<List<double>> processedFile = new List<List<double>>();
+
+            List<string> lines = File.ReadAllLines(filePath).ToList();
+            lines.RemoveAt(0);
+
+            foreach (var line in lines)
+            {
+                var columns = line.Split(new[] { "," }, StringSplitOptions.None);
+                List<double> row = new List<double>();
+
+                foreach (var column in columns)
+                {
+                    row.Add(double.Parse(column));
+                }
+
+                processedFile.Add(row);
+            }
+
+            return processedFile;
 
         }
 

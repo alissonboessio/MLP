@@ -143,8 +143,8 @@
                                         FontSize="14"
                                         Cursor="Hand"
                                         Content="Selecionar arquivo de entrada"
-                                     Name="BTTrainFile"
-                                     Click="BTTrainFile_Click">
+                                        Name="BTTrainFile"
+                                        Click="BTTrainFile_Click">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius"
@@ -162,7 +162,7 @@
                                 Height="28"
                                 Name="TBOutputTrainFile"
                                  Margin="0,0,5,0"
-                                 Text="{Binding OutputFilePath}" />
+                                 Text="{Binding TrainDummiesFilePath}" />
 
                             <Button Grid.Column="1"
                                  Padding="8,0"
@@ -197,7 +197,7 @@
                                          Height="28"
                                          Name="TBTestFile"
                                          Margin="0,0,5,0"
-                                         Text="{Binding DataFilePath}" />
+                                         Text="{Binding TestFilePath}" />
 
                                 <Button Grid.Column="1"
                                         Padding="8,0"
@@ -225,7 +225,7 @@
                                          Width="350"
                                          Name="TBTestOutputFile"
                                          Margin="0,0,5,0"
-                                         Text="{Binding DataOutputFilePath}" />
+                                         Text="{Binding TestDummiesFilePath}" />
 
                                 <Button Grid.Column="1"
                                         Padding="8,0"

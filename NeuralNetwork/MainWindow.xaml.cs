@@ -28,12 +28,29 @@ namespace NeuralNetwork
                 return;
             }
 
-            ParametersViewModel.Train();
+            try
+            {
+                ParametersViewModel.Train();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
+
 
         }
         private void BT_TestarRede_Click(object sender, RoutedEventArgs e)
         {
-            ParametersViewModel.Test();
+            try
+            {
+                ParametersViewModel.Test();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
 
         }
 
@@ -47,7 +64,7 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.DataFilePath = openFileDialog.FileName;
+                ParametersViewModel.TrainFilePath = openFileDialog.FileName;
             }
         }
 
@@ -61,7 +78,7 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.OutputFilePath = openFileDialog.FileName;
+                ParametersViewModel.TrainDummiesFilePath = openFileDialog.FileName;
             }
         }
 
@@ -89,7 +106,7 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.DataOutputFilePath = openFileDialog.FileName;
+                ParametersViewModel.TestDummiesFilePath = openFileDialog.FileName;
             }
         }
     }
