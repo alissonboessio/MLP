@@ -1,15 +1,8 @@
 ﻿using NeuralNetwork.Objects;
 using NeuralNetwork.Objects.MLP;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace NeuralNetwork.ViewModel
 {
@@ -83,11 +76,11 @@ namespace NeuralNetwork.ViewModel
             {
                 if (_trainFilePath != value)
                 {
-                    _trainFilePath = value;
-                    if (_trainFilePath != null)
+                    if (value != null)
                     {
-                        TrainInput = ProcessFile(TrainFilePath);
+                        TrainInput = ProcessFile(value);
                     }
+                    _trainFilePath = value;
                     OnPropertyChanged(nameof(TrainFilePath));
                 }
             }
@@ -101,11 +94,11 @@ namespace NeuralNetwork.ViewModel
             {
                 if (_trainDummiesFilePath != value)
                 {
-                    _trainDummiesFilePath = value;
-                    if (_trainDummiesFilePath != null)
+                    if (value != null)
                     {
-                        TrainOutput = ProcessFile(TrainDummiesFilePath);
+                        TrainOutput = ProcessFile(value);
                     }
+                    _trainDummiesFilePath = value;
                     OnPropertyChanged(nameof(TrainDummiesFilePath));
                 }
             }
@@ -126,11 +119,11 @@ namespace NeuralNetwork.ViewModel
             {
                 if (_testFilePath != value)
                 {
-                    _testFilePath = value;
-                    if (_testFilePath != null)
+                    if (value != null)
                     {
-                        TestInput = ProcessFile(TestFilePath);
+                        TestInput = ProcessFile(value);
                     }
+                    _testFilePath = value;
                     OnPropertyChanged(nameof(TestFilePath));
                 }
             }
@@ -144,11 +137,11 @@ namespace NeuralNetwork.ViewModel
             {
                 if (_testDummiesFilePath != value)
                 {
-                    _testDummiesFilePath = value;
-                    if (_testDummiesFilePath != null)
+                    if (value != null)
                     {
-                        TestOutput = ProcessFile(TestDummiesFilePath);
+                        TestOutput = ProcessFile(value);
                     }
+                    _testDummiesFilePath = value;
                     OnPropertyChanged(nameof(TestDummiesFilePath));
                 }
             }
@@ -187,6 +180,28 @@ namespace NeuralNetwork.ViewModel
             }
         }
 
+        private double _trainingProgress;
+        public double TrainingProgress
+        {
+            get => _trainingProgress;
+            set
+            {
+                _trainingProgress = value;
+                OnPropertyChanged(nameof(TrainingProgress));
+            }
+        }
+
+        private bool _isTraining;
+        public bool IsTraining
+        {
+            get => _isTraining;
+            set
+            {
+                _isTraining = value;
+                OnPropertyChanged(nameof(IsTraining));
+            }
+        }
+
         // camada de entrada e saida o usuario nao pode modificar, a de saida é pelo dummies
         private ObservableCollection<LayerItem> _layers;
         public ObservableCollection<LayerItem> Layers
@@ -205,6 +220,7 @@ namespace NeuralNetwork.ViewModel
         {
             IsTrained = false;
             TestReturnMLP = null;
+            IsTraining = true;
 
             List<int> layersLocal = new List<int>();
 
@@ -214,15 +230,23 @@ namespace NeuralNetwork.ViewModel
 
             mlp = new MLP(layersLocal);
 
-            mlp.Train(TrainInput, TrainOutput, Iterations, (double)LearningRate);
+            var progress = new Progress<double>(value =>
+            {
+                TrainingProgress = value;
+            });
 
-            IsTrained = true;
+            Task.Run(() =>
+            {
+                TrainingProgress = 0;
+                mlp.Train(TrainInput, TrainOutput, Iterations, (double)LearningRate, progress);
+                IsTraining = false; 
+                IsTrained = true;
+            });
 
         }
 
         public void Test()
         {
-
             TestReturnMLP = mlp.Test(TestInput, TestOutput, (double)TestThreshold);
 
         }
@@ -241,14 +265,44 @@ namespace NeuralNetwork.ViewModel
 
                 foreach (var column in columns)
                 {
-                    row.Add(double.Parse(column));
+                    if (double.TryParse(column, out double columnParsed))
+                    {
+                        row.Add(columnParsed);
+
+                    }else
+                    {
+                        row.Add(0.0);
+
+                    }
                 }
 
                 processedFile.Add(row);
-            }
+            }          
 
             return processedFile;
 
+        }
+
+        public void SaveTestReturnToTXT(string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine($"TotalCases: {TestReturnMLP.TotalCases}");
+                writer.WriteLine($"QtyCorrect: {TestReturnMLP.QtyCorrect}");
+                writer.WriteLine($"QtyWrong: {TestReturnMLP.QtyWrong}");
+                writer.WriteLine($"Accuracy: {TestReturnMLP.Accuracy}");
+            }
+        }
+        public void SaveListToCsvFile(List<List<double>> data, string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                foreach (var row in data)
+                {
+                    var rowString = string.Join(",", row);
+                    writer.WriteLine(rowString);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

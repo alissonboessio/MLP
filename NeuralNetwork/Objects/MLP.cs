@@ -29,7 +29,7 @@ namespace NeuralNetwork.Objects.MLP
             return inputs; // Retorna ao final, o output calculado
         }
 
-        public void Train(List<List<double>> trainingInputs, List<List<double>> trainingOutputs, int iterations, double learningRate)
+        public void Train(List<List<double>> trainingInputs, List<List<double>> trainingOutputs, int iterations, double learningRate, IProgress<double> progress = null)
         {
             for (int iter = 0; iter < iterations; iter++)
             {
@@ -39,6 +39,10 @@ namespace NeuralNetwork.Objects.MLP
 
                     // Apos realizar a propagacao nas camadas, realiza o backpropagation para corrigir erros
                     Backpropagate(output, trainingOutputs[i], learningRate, trainingInputs[i]);
+                }
+                if (progress != null)
+                {
+                    progress?.Report(iter);
                 }
             }
         }

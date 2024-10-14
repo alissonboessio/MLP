@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeuralNetwork"
         xmlns:viewmodel="clr-namespace:NeuralNetwork.ViewModel"
+        xmlns:conv="clr-namespace:NeuralNetwork.Converters"
         d:DataContext="{d:DesignInstance viewmodel:ParametersViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d" Title="MLP Neural Network" Height="600" MinHeight="600" Width="900" MinWidth="900" FontSize="20" ResizeMode="NoResize">
+    <Window.Resources>
+        <conv:BooleanInverter x:Key="BooleanInverter" />
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -26,20 +30,45 @@
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="BT_TreinarRede"
-                        Click="BT_TreinarRede_Click"
-                        Width="200"
-                        Cursor="Hand"
-                        Content="Treinar Rede"
-                        Height="120"
-                        Grid.Column="0">
-                    <Button.Resources>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="CornerRadius"
-                                    Value="10" />
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                <Grid Grid.Column="0">
+                    <Button x:Name="BT_TreinarRede"
+                            Click="BT_TreinarRede_Click"
+                            Width="200"
+                            Cursor="Hand"
+                            Content="Treinar Rede"
+                            Height="120">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius"
+                                        Value="10" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <ProgressBar Minimum="0"
+                                 Maximum="100"
+                                 Margin="10,200,10,0"
+                                 Value="{Binding TrainingProgress}"
+                                 IsIndeterminate="False"
+                                 Height="10"
+                                 x:Name="progressBar">
+                        <ProgressBar.Style>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsTraining}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ProgressBar.Style>
+
+                    </ProgressBar>
+                </Grid>
+
 
                 <Button x:Name="BT_TestarRede"
                         Click="BT_TestarRede_Click"
@@ -47,23 +76,8 @@
                         Cursor="Hand"
                         Content="Testar Rede"
                         Height="120"
-                        Grid.Column="1">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsTrained}"
-                                             Value="True">
-                                    <Setter Property="IsEnabled"
-                                            Value="True" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsTrained}"
-                                             Value="False">
-                                    <Setter Property="IsEnabled"
-                                            Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        Grid.Column="1"
+                        IsEnabled="{Binding IsTrained}">
                     <Button.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius"
@@ -87,7 +101,7 @@
                             <TextBlock Text="{Binding TestReturnMLP.QtyWrong, StringFormat='Qtde. errada: {0}'}" />
                             <TextBlock Text="{Binding TestReturnMLP.Accuracy, StringFormat='Acurácia: {0:P2}'}" />
                             <Button x:Name="BT_SalvarResultados"
-                                    Click="BT_TreinarRede_Click"
+                                    Click="BT_SalvarResultados_Click"
                                     Cursor="Hand"
                                     Content="Salvar Resultados"
                                     Margin="0,10,0,0"
@@ -120,7 +134,8 @@
             
             <GroupBox Grid.Row="1"
                       Header="Arquivos"
-                      Margin="5,5,0,5">
+                      Margin="5,5,0,5"
+                      IsEnabled="{Binding IsTraining, Converter={StaticResource BooleanInverter}}">
 
                 <StackPanel>
 

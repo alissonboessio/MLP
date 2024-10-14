@@ -1,8 +1,8 @@
 ﻿
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Microsoft.Win32;
+using NeuralNetwork.Objects;
 using NeuralNetwork.ViewModel;
 
 namespace NeuralNetwork
@@ -28,8 +28,16 @@ namespace NeuralNetwork
                 return;
             }
 
+            if (ParametersViewModel.TrainFilePath == null || ParametersViewModel.TrainDummiesFilePath == null)
+            {
+                MessageBox.Show("Defina os arquivos de treino!", "Parâmetros Incorretos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
+                progressBar.Minimum = 0;
+                progressBar.Maximum = ParametersViewModel.Iterations;
                 ParametersViewModel.Train();
             }
             catch (Exception ex)
@@ -44,6 +52,12 @@ namespace NeuralNetwork
         {
             try
             {
+                if (ParametersViewModel.TestFilePath == null || ParametersViewModel.TestDummiesFilePath == null)
+                {
+                    MessageBox.Show("Defina os arquivos de teste!", "Parâmetros Incorretos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 ParametersViewModel.Test();
             }
             catch (Exception ex)
@@ -64,7 +78,15 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.TrainFilePath = openFileDialog.FileName;
+                try
+                {
+                    ParametersViewModel.TrainFilePath = openFileDialog.FileName;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro ao processar arquivo!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
 
@@ -78,7 +100,15 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.TrainDummiesFilePath = openFileDialog.FileName;
+                try
+                {
+                    ParametersViewModel.TrainDummiesFilePath = openFileDialog.FileName;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro ao processar arquivo!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
 
@@ -92,8 +122,16 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.TestFilePath = openFileDialog.FileName;
-            }
+                try
+                {
+                    ParametersViewModel.TestFilePath = openFileDialog.FileName;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro ao processar arquivo!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }          
         }
 
         private void BTTestOutputFile_Click(object sender, RoutedEventArgs e)
@@ -106,8 +144,28 @@ namespace NeuralNetwork
 
             if (openFileDialog.ShowDialog() == true)
             {
-                ParametersViewModel.TestDummiesFilePath = openFileDialog.FileName;
+                try
+                {
+                    ParametersViewModel.TestDummiesFilePath = openFileDialog.FileName;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro ao processar arquivo!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
+        }
+
+        private void BT_SalvarResultados_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime dt = DateTime.Now;
+            string savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "results");
+            var di = Directory.CreateDirectory(Path.GetDirectoryName(savePath));
+
+            ParametersViewModel.SaveTestReturnToTXT(Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-summary.txt"));
+            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.calculatedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-CalculatedOutput.csv"));
+            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.classifiedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-ClassifiedOutput.csv"));
+    
         }
     }
 }
