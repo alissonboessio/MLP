@@ -10,15 +10,15 @@
 
         public Neuron(int prevLayerSize)
         {
-            this.InputWeights = new List<double>(prevLayerSize);
-            this.Bias = 0.0;
-
             Random rand = new Random();
+
+            this.InputWeights = new List<double>(prevLayerSize);
+            this.Bias = rand.NextDouble();
+
             for (int i = 0; i < prevLayerSize; i++)
             {
                 InputWeights.Add(rand.NextDouble());
             }
-            this.Bias = rand.NextDouble();
         }
 
         public void UpdateInputWeights(double learningRate, List<double> inputs)

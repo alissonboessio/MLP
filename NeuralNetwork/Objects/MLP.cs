@@ -170,7 +170,7 @@ namespace NeuralNetwork.Objects.MLP
 
                 List<double> inputs = (layerIndex == 0)
                     ? realInputs  // Se for a primeira camada, utiliza o input de entrada
-                    : Layers[layerIndex - 1].Neurons.Select(neuron => neuron.Output).ToList(); // Para camadas ocultas usa os outputs da camada anterior como input
+                    : Layers[layerIndex - 1].Neurons.Select(neuron => neuron.Output).ToList();
 
                 for (int neuronIndex = 0; neuronIndex < layer.Neurons.Count; neuronIndex++)
                 {
