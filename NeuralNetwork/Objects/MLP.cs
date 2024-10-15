@@ -30,7 +30,8 @@ namespace NeuralNetwork.Objects.MLP
             return inputs; // Retorna ao final, o output calculado
         }
 
-        public void Train(List<List<double>> trainingInputs, List<List<double>> trainingOutputs, int iterations, double learningRate, IProgress<double> progress = null)
+        public void Train(List<List<double>> trainingInputs, List<List<double>> trainingOutputs, 
+            int iterations, double learningRate, IProgress<double> progress = null)
         {
             for (int iter = 0; iter < iterations; iter++)
             {
