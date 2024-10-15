@@ -160,11 +160,11 @@ namespace NeuralNetwork
         {
             DateTime dt = DateTime.Now;
             string savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "results");
-            var di = Directory.CreateDirectory(Path.GetDirectoryName(savePath));
+            var di = Directory.CreateDirectory(savePath);
 
-            ParametersViewModel.SaveTestReturnToTXT(Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-summary.txt"));
-            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.calculatedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-CalculatedOutput.csv"));
-            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.classifiedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd")}-ClassifiedOutput.csv"));
+            ParametersViewModel.SaveTestReturnToTXT(Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd-hh-mm-ss")}-summary.txt"));
+            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.calculatedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd-hh-mm-ss")}-CalculatedOutput.csv"));
+            ParametersViewModel.SaveListToCsvFile(ParametersViewModel.TestReturnMLP.classifiedOutput, Path.Combine(savePath, $"{dt.ToString("yyyy-MM-dd-hh-mm-ss")}-ClassifiedOutput.csv"));
     
         }
     }

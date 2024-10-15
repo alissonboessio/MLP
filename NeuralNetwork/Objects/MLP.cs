@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace NeuralNetwork.Objects.MLP
 {
@@ -24,7 +25,7 @@ namespace NeuralNetwork.Objects.MLP
         {
             foreach (var layer in Layers)
             {
-                inputs = layer.ForwardPropagate(inputs);  // Propaga os inputs em cada Layer
+                inputs = layer.Propagate(inputs);  // Propaga os inputs em cada Layer
             }
             return inputs; // Retorna ao final, o output calculado
         }
@@ -38,7 +39,7 @@ namespace NeuralNetwork.Objects.MLP
                     var output = ForwardPropagate(trainingInputs[i]);
 
                     // Apos realizar a propagacao nas camadas, realiza o backpropagation para corrigir erros
-                    Backpropagate(output, trainingOutputs[i], learningRate, trainingInputs[i]);
+                    BackPropagate(output, trainingOutputs[i], learningRate, trainingInputs[i]);
                 }
                 if (progress != null)
                 {
@@ -59,7 +60,7 @@ namespace NeuralNetwork.Objects.MLP
             TestReturn testReturn = new TestReturn();
             testReturn.TotalCases = outputsMLP.Count;
             testReturn.calculatedOutput.AddRange(outputsMLP);
-
+            
             for (int i = 0; i < outputsMLP.Count; i++)
             {
                 List<double> classifiedOutputs = ApplyThreshold(outputsMLP[i], threshold);
@@ -75,19 +76,40 @@ namespace NeuralNetwork.Objects.MLP
                     }
                 }
 
+                string keyClass = string.Join(",", testOutputs[i]);
+
+                if (!testReturn.TotalByClass.ContainsKey(keyClass))
+                {
+                    testReturn.TotalByClass[keyClass] = new TotalByClass
+                    {
+                        total = 0,
+                        totalCorrect = 0,
+                        totalWrong = 0
+                    };
+                }
+
+                testReturn.TotalByClass[keyClass].total += 1;
+
                 if (isCorrect)
                 {
+                    testReturn.TotalByClass[keyClass].totalCorrect += 1;
                     testReturn.QtyCorrect++;
                 }
                 else
                 {
+                    testReturn.TotalByClass[keyClass].totalWrong += 1;
                     testReturn.QtyWrong++;
                 }
             }
 
+            foreach (var classPrecision in testReturn.TotalByClass)
+            {
+                testReturn.Precision[classPrecision.Key] = (decimal)classPrecision.Value.totalCorrect / classPrecision.Value.total;
+            }
+
             testReturn.Accuracy = (decimal)testReturn.QtyCorrect / testReturn.TotalCases;
 
-           return testReturn;
+            return testReturn;
 
         }
 
@@ -110,9 +132,8 @@ namespace NeuralNetwork.Objects.MLP
             return thresholdInputs;
         }
 
-        private void Backpropagate(List<double> realOutput, List<double> expectedOutput, double learningRate, List<double> realInputs)
+        private void BackPropagate(List<double> realOutput, List<double> expectedOutput, double learningRate, List<double> realInputs)
         {
-
 
             // camada de saida
             for (int i = 0; i < Layers.Last().Neurons.Count; i++)
@@ -148,13 +169,13 @@ namespace NeuralNetwork.Objects.MLP
                 Layer layer = Layers[layerIndex];
 
                 List<double> inputs = (layerIndex == 0)
-                    ? realInputs  // Se for a primeira camada, pega o input de entrada
-                    : Layers[layerIndex - 1].Neurons.Select(neuron => neuron.Output).ToList(); // Para camadas ocultas, usa os outputs da camada anterior como input
+                    ? realInputs  // Se for a primeira camada, utiliza o input de entrada
+                    : Layers[layerIndex - 1].Neurons.Select(neuron => neuron.Output).ToList(); // Para camadas ocultas usa os outputs da camada anterior como input
 
                 for (int neuronIndex = 0; neuronIndex < layer.Neurons.Count; neuronIndex++)
                 {
                     Neuron neuron = layer.Neurons[neuronIndex];
-                    neuron.UpdateInputWeights(learningRate, inputs); // Passa os inputs corretos
+                    neuron.UpdateInputWeights(learningRate, inputs);
                 }
             }
         }

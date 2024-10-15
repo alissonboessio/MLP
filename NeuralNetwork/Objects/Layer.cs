@@ -15,7 +15,7 @@ namespace NeuralNetwork.Objects
 
         }
 
-        public List<double> ForwardPropagate(List<double> inputs)
+        public List<double> Propagate(List<double> inputs)
         {
             List<double> outputs = new List<double>(Neurons.Count);
             this.Neurons.ForEach(n =>

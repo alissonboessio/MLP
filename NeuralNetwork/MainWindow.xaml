@@ -99,7 +99,32 @@
                             <TextBlock Text="{Binding TestReturnMLP.TotalCases, StringFormat='Qtde. testes: {0}'}"/>
                             <TextBlock Text="{Binding TestReturnMLP.QtyCorrect, StringFormat='Qtde. correta: {0}'}" />
                             <TextBlock Text="{Binding TestReturnMLP.QtyWrong, StringFormat='Qtde. errada: {0}'}" />
-                            <TextBlock Text="{Binding TestReturnMLP.Accuracy, StringFormat='Acurácia: {0:P2}'}" />
+                            <TextBlock Text="{Binding TestReturnMLP.Accuracy, StringFormat='Acurácia: {0:P2}'}"
+                                       Margin="0,5"/>
+                            <TextBlock Text="Precisão por classe" >
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TestReturnMLP}"
+                                                         Value="{x:Null}">
+                                                <Setter Property="Visibility"
+                                                        Value="Hidden" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding TestReturnMLP.Precision}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Key, StringFormat=' {0:P2}'}"/>
+                                            <TextBlock Text=": "/>
+                                            <TextBlock Text="{Binding Value, StringFormat=' {0:P2}'}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <Button x:Name="BT_SalvarResultados"
                                     Click="BT_SalvarResultados_Click"
                                     Cursor="Hand"

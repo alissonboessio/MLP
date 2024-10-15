@@ -2,6 +2,7 @@
 using NeuralNetwork.Objects.MLP;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 
 namespace NeuralNetwork.ViewModel
@@ -265,7 +266,7 @@ namespace NeuralNetwork.ViewModel
 
                 foreach (var column in columns)
                 {
-                    if (double.TryParse(column, out double columnParsed))
+                    if (double.TryParse(column, NumberStyles.Any, CultureInfo.InvariantCulture, out double columnParsed))
                     {
                         row.Add(columnParsed);
 
@@ -291,6 +292,12 @@ namespace NeuralNetwork.ViewModel
                 writer.WriteLine($"QtyCorrect: {TestReturnMLP.QtyCorrect}");
                 writer.WriteLine($"QtyWrong: {TestReturnMLP.QtyWrong}");
                 writer.WriteLine($"Accuracy: {TestReturnMLP.Accuracy}");
+
+                writer.WriteLine("Precision");
+                foreach (var item in TestReturnMLP.Precision)
+                {
+                    writer.WriteLine($"{item.Key}: {item.Value}");
+                }
             }
         }
         public void SaveListToCsvFile(List<List<double>> data, string filePath)
