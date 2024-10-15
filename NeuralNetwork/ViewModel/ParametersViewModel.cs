@@ -288,6 +288,17 @@ namespace NeuralNetwork.ViewModel
         {
             using (StreamWriter writer = new StreamWriter(filePath))
             {
+                writer.WriteLine($"Epochs: {Iterations}");
+                writer.WriteLine($"LeraningRate: {LearningRate}");
+                writer.WriteLine($"Threshold: {TestThreshold}");
+
+                writer.WriteLine("Internal Layers");
+                foreach (var item in Layers)
+                {
+                    writer.WriteLine($"{item.Index}: {item.QtyNeurons} neurons");
+                }
+                writer.WriteLine("");
+
                 writer.WriteLine($"TotalCases: {TestReturnMLP.TotalCases}");
                 writer.WriteLine($"QtyCorrect: {TestReturnMLP.QtyCorrect}");
                 writer.WriteLine($"QtyWrong: {TestReturnMLP.QtyWrong}");

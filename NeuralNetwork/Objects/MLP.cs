@@ -76,9 +76,7 @@ namespace NeuralNetwork.Objects.MLP
                         break;
                     }
                 }
-
                 string keyClass = string.Join(",", testOutputs[i]);
-
                 if (!testReturn.TotalByClass.ContainsKey(keyClass))
                 {
                     testReturn.TotalByClass[keyClass] = new TotalByClass
@@ -88,9 +86,7 @@ namespace NeuralNetwork.Objects.MLP
                         totalWrong = 0
                     };
                 }
-
                 testReturn.TotalByClass[keyClass].total += 1;
-
                 if (isCorrect)
                 {
                     testReturn.TotalByClass[keyClass].totalCorrect += 1;
@@ -102,12 +98,10 @@ namespace NeuralNetwork.Objects.MLP
                     testReturn.QtyWrong++;
                 }
             }
-
             foreach (var classPrecision in testReturn.TotalByClass)
             {
                 testReturn.Precision[classPrecision.Key] = (decimal)classPrecision.Value.totalCorrect / classPrecision.Value.total;
             }
-
             testReturn.Accuracy = (decimal)testReturn.QtyCorrect / testReturn.TotalCases;
 
             return testReturn;
