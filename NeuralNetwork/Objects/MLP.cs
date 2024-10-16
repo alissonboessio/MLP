@@ -49,7 +49,7 @@ namespace NeuralNetwork.Objects.MLP
             }
         }
         
-        public TestReturn Test(List<List<double>> testInputs, List<List<double>> testOutputs, double threshold)
+        public TestReturn Test(List<List<double>> testInputs, List<List<double>> testOutputs)
         {
             List<List<double>> outputsMLP = new List<List<double>>();
 
@@ -64,7 +64,7 @@ namespace NeuralNetwork.Objects.MLP
             
             for (int i = 0; i < outputsMLP.Count; i++)
             {
-                List<double> classifiedOutputs = ApplyThreshold(outputsMLP[i], threshold);
+                List<double> classifiedOutputs = CheckClass(outputsMLP[i]);
                 testReturn.classifiedOutput.Add(classifiedOutputs);
 
                 bool isCorrect = true;
@@ -108,15 +108,18 @@ namespace NeuralNetwork.Objects.MLP
 
         }
 
-        public List<double> ApplyThreshold(List<double> inputs, double threshold)
+  
+        public List<double> CheckClass(List<double> inputs)
         {
             List<double> thresholdInputs = new List<double>();
 
+            double maxValue = inputs.Max();
+
             foreach (var input in inputs)
             {
-                if (input > threshold)
+                if (input == maxValue)
                 {
-                    thresholdInputs.Add(1.0); 
+                    thresholdInputs.Add(1.0);
                 }
                 else
                 {

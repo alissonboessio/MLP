@@ -53,19 +53,6 @@ namespace NeuralNetwork.ViewModel
             }
         }
 
-        private decimal _testThreshold = 0.5M; 
-        public decimal TestThreshold
-        {
-            get => _testThreshold;
-            set
-            {
-                if (_testThreshold != value)
-                {
-                    _testThreshold = value;
-                    OnPropertyChanged(nameof(TestThreshold));
-                }
-            }
-        }
 
         #region Train Files
 
@@ -248,7 +235,7 @@ namespace NeuralNetwork.ViewModel
 
         public void Test()
         {
-            TestReturnMLP = mlp.Test(TestInput, TestOutput, (double)TestThreshold);
+            TestReturnMLP = mlp.Test(TestInput, TestOutput);
 
         }
 
@@ -290,13 +277,16 @@ namespace NeuralNetwork.ViewModel
             {
                 writer.WriteLine($"Epochs: {Iterations}");
                 writer.WriteLine($"LeraningRate: {LearningRate}");
-                writer.WriteLine($"Threshold: {TestThreshold}");
+
+                writer.WriteLine($"Input Layer: {TrainInput.FirstOrDefault().Count}");
+
 
                 writer.WriteLine("Internal Layers");
                 foreach (var item in Layers)
                 {
                     writer.WriteLine($"{item.Index}: {item.QtyNeurons} neurons");
                 }
+                writer.WriteLine($"Output Layer: {TrainOutput.FirstOrDefault().Count}");
                 writer.WriteLine("");
 
                 writer.WriteLine($"TotalCases: {TestReturnMLP.TotalCases}");
